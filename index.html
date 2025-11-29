@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>TopUpGame - Top Up Game Mudah & Aman</title>
+  <style>
+    :root{--accent:#2563eb;--bg:#0f172a;--card:#0b1220;--muted:#94a3b8}
+    *{box-sizing:border-box}
+    body{font-family:Inter,ui-sans-serif,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial; margin:0; background:linear-gradient(180deg,#071024 0%, #07172b 100%); color:#e6eef8}
+    header{display:flex;align-items:center;justify-content:space-between;padding:18px 28px;background:rgba(255,255,255,0.02);backdrop-filter:blur(6px)}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#7c3aed);display:flex;align-items:center;justify-content:center;font-weight:700}
+    nav a{color:var(--muted);text-decoration:none;margin-left:14px;font-size:14px}
+    main{display:grid;grid-template-columns:1fr 420px;gap:20px;padding:26px}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:12px;padding:18px;box-shadow:0 6px 18px rgba(2,6,23,0.6)}
+    .games-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+    .game{padding:14px;border-radius:10px;background:rgba(255,255,255,0.01)}
+    .game h3{margin:0 0 8px 0}
+    .pkg{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;margin-top:8px;border-radius:8px;background:rgba(255,255,255,0.015);cursor:pointer}
+    .pkg:hover{transform:translateY(-4px);transition:all .15s}
+    .sidebar .summary{margin-top:12px}
+    label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+    input,select{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit}
+    button{background:var(--accent);color:white;padding:10px 14px;border-radius:10px;border:0;cursor:pointer}
+    .muted{color:var(--muted);font-size:13px}
+    footer{padding:18px 28px;color:var(--muted);font-size:13px;text-align:center}
+    .cart-item{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed rgba(255,255,255,0.02)}
+    .success{background:linear-gradient(90deg,#10b981,#06b6d4);padding:10px;border-radius:8px;color:#022;}
+    @media(max-width:980px){main{grid-template-columns:1fr} .games-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <div class="logo">TG</div>
+      <div>
+        <div style="font-weight:700">TOP-UP DENY</div>
+        <div class="muted" style="font-size:12px">Top up cepat & aman</div>
+      </div>
+    </div>
+    <nav>
+      <a href="#">Beranda</a>
+      <a href="#">Cara Kerja</a>
+      <a href="#">Bantuan</a>
+    </nav>
+  </header>
+
+  <main>
+    <section>
+      <div class="card">
+        <h2 style="margin:0 0 6px 0">Pilih Game & Paket</h2>
+        <p class="muted" style="margin:0 0 12px 0">Pilih game dan paket top-up yang kamu mau, masukkan ID pemain lalu checkout.</p>
+
+        <div style="display:flex;gap:12px;margin-bottom:12px;flex-wrap:wrap">
+          <div style="flex:1;min-width:200px">
+            <label for="gameSelect">Game</label>
+            <select id="gameSelect"></select>
+          </div>
+          <div style="width:150px">
+            <label for="serverSelect">Server</label>
+            <select id="serverSelect"><option value="1">1</option><option value="2">2</option><option value="3">3</option></select>
+          </div>
+        </div>
+
+        <div class="games-grid" id="packages"></div>
+
+        <div style="margin-top:14px">
+          <label for="playerId">Player ID / Username</label>
+          <input id="playerId" placeholder="Masukkan ID pemain" />
+        </div>
+
+      </div>
+
+      <div class="card" style="margin-top:14px">
+        <h3 style="margin:0 0 10px 0">Cara kerja singkat</h3>
+        <ol class="muted" style="margin:0 0 0 18px">
+          <li>Pilih game dan paket.</li>
+          <li>Masukkan Player ID lalu checkout.</li>
+          <li>Transaksi otomatis (mock) dan konfirmasi.</li>
+        </ol>
+      </div>
+    </section>
+
+    <aside class="sidebar">
+      <div class="card">
+        <h3>Ringkasan Order</h3>
+        <div id="cartList" class="summary" style="margin-top:8px"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+          <div>
+            <div class="muted">Total</div>
+            <div id="totalPrice" style="font-size:18px;font-weight:700">Rp0</div>
+          </div>
+          <button id="checkoutBtn">Checkout</button>
+        </div>
+        <div id="paymentArea" style="margin-top:12px;display:none">
+          <label for="paymentMethod">Metode Pembayaran</label>
+          <select id="paymentMethod">
+            <option value="manual">Transfer Bank (Manual)</option>
+            <option value="ovo">OVO (Mock)</option>
+            <option value="gopay">GoPay (Mock)</option>
+          </select>
+          <div style="margin-top:8px">
+            <button id="payNow">Bayar Sekarang</button>
+          </div>
+        </div>
+
+        <div id="successBox" style="margin-top:12px;display:none" class="success"></div>
+      </div>
+
+      <div class="card" style="margin-top:12px">
+        <h4 style="margin:0 0 8px 0">Informasi</h4>
+        <div class="muted">Contoh website top-up untuk latihan. Jangan taruh data sensitif pada file ini. Untuk produksi, hubungkan ke backend yang aman.</div>
+      </div>
+    </aside>
+  </main>
+
+  <footer>
+    Dibuat oleh: <strong>Nama Pembuat</strong> • Demo top-up game
+  </footer>
+
+  <script>
+    // Data sample games dan paket
+    const GAMES = [
+      {id:'ml', name:'Mobile Legends', packages:[{id:'ml1',name:'Diamond 12',price:12000},{id:'ml2',name:'Diamond 50',price:45000},{id:'ml3',name:'Diamond 100',price:85000}]},
+      {id:'ff', name:'Free Fire', packages:[{id:'ff1',name:'Diamond 10',price:10000},{id:'ff2',name:'Diamond 70',price:60000},{id:'ff3',name:'Diamond 140',price:110000}]},
+      {id:'pubg', name:'PUBG Mobile', packages:[{id:'pb1',name:'UC 60',price:15000},{id:'pb2',name:'UC 300',price:60000}]},
+      {id:'valorant', name:'Valorant', packages:[{id:'va1',name:'VP 475',price:50000},{id:'va2',name:'VP 1000',price:95000}]}
+    ];
+
+    // State
+    let CART = [];
+    const gameSelect = document.getElementById('gameSelect');
+    const packagesEl = document.getElementById('packages');
+    const cartList = document.getElementById('cartList');
+    const totalPriceEl = document.getElementById('totalPrice');
+    const checkoutBtn = document.getElementById('checkoutBtn');
+    const paymentArea = document.getElementById('paymentArea');
+    const payNow = document.getElementById('payNow');
+    const successBox = document.getElementById('successBox');
+
+    // Populate game dropdown
+    GAMES.forEach(g=>{
+      const opt = document.createElement('option'); opt.value=g.id; opt.textContent=g.name; gameSelect.appendChild(opt)
+    });
+
+    function showPackagesFor(gameId){
+      packagesEl.innerHTML='';
+      const game = GAMES.find(g=>g.id===gameId);
+      if(!game) return;
+      game.packages.forEach(pkg=>{
+        const div = document.createElement('div'); div.className='game';
+        div.innerHTML = `
+          <h3>${game.name}</h3>
+          <div class="pkg" data-pkg-id="${pkg.id}" data-game-id="${game.id}">
+            <div style="font-weight:600">${pkg.name}</div>
+            <div style="text-align:right">
+              <div class="muted">Rp ${formatNumber(pkg.price)}</div>
+              <small class="muted">Klik untuk tambah</small>
+            </div>
+          </div>
+        `;
+        packagesEl.appendChild(div);
+        // click
+        div.querySelector('.pkg').addEventListener('click', ()=>{
+          addToCart({gameId:game.id,gameName:game.name, pkgId:pkg.id, pkgName:pkg.name, price:pkg.price});
+        });
+      })
+    }
+
+    function addToCart(item){
+      CART.push(item);
+      renderCart();
+    }
+
+    function renderCart(){
+      cartList.innerHTML='';
+      if(CART.length===0) cartList.innerHTML='<div class="muted">Keranjang masih kosong</div>';
+      CART.forEach((c,idx)=>{
+        const div = document.createElement('div'); div.className='cart-item';
+        div.innerHTML = `<div>${c.gameName} • ${c.pkgName}</div><div>Rp ${formatNumber(c.price)} <button data-idx="${idx}" style="margin-left:8px;background:transparent;border:0;color:var(--muted);cursor:pointer">hapus</button></div>`;
+        cartList.appendChild(div);
+        div.querySelector('button').addEventListener('click', (e)=>{ removeFromCart(parseInt(e.target.dataset.idx)); });
+      })
+      updateTotal();
+    }
+
+    function removeFromCart(i){ CART.splice(i,1); renderCart(); }
+
+    function updateTotal(){
+      const total = CART.reduce((s,i)=>s+i.price,0);
+      totalPriceEl.textContent = 'Rp ' + formatNumber(total);
+    }
+
+    function formatNumber(n){ return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
+
+    // Checkout flow (mock)
+    checkoutBtn.addEventListener('click', ()=>{
+      const playerId = document.getElementById('playerId').value.trim();
+      if(CART.length===0){ alert('Keranjang kosong. Pilih paket terlebih dahulu.'); return; }
+      if(!playerId){ alert('Masukkan Player ID / Username.'); return; }
+      paymentArea.style.display='block';
+      window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
+    });
+
+    payNow.addEventListener('click', ()=>{
+      // mock processing
+      const method = document.getElementById('paymentMethod').value;
+      const total = CART.reduce((s,i)=>s+i.price,0);
+      successBox.style.display='block';
+      successBox.innerHTML = `Pembayaran berhasil via <strong>${method}</strong>.<br/>Total: <strong>Rp ${formatNumber(total)}</strong>.<br/>Pesanan akan dikirim ke ID: <strong>${document.getElementById('playerId').value}</strong>`;
+      // clear cart after success
+      CART = [];
+      renderCart();
+      paymentArea.style.display='none';
+      // In production: panggil API backend untuk mencatat order & integrasi pembayaran
+    });
+
+    // Init
+    showPackagesFor(GAMES[0].id);
+    gameSelect.addEventListener('change', (e)=> showPackagesFor(e.target.value));
+    renderCart();
+
+    // --- Tips untuk pengembangan lanjut ---
+    // 1) Ganti mock dengan panggilan API ke backend untuk memproses order (fetch/axios).
+    // 2) Simpan paket & harga di database, gunakan autentikasi pengguna.
+    // 3) Integrasikan gateway pembayaran (Midtrans, Xendit, Ovo, Gopay) pada server.
+    // 4) Tambahkan validasi lebih kuat dan re-check untuk mencegah fraud.
+  </script>
+</body>
+</html>
